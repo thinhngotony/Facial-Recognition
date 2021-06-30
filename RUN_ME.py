@@ -59,14 +59,16 @@ def gen():
                 print("Day la mat cua: ", name)
                 
 
-        # Quá trình tính FPS
+        # Quá trình tính FPS và Latency
         dt = time.time()-timeStamp
+        latency = dt*1000
         fps = 1/dt
         # fpsReport = .90*fpsReport + .1*fps
-        print('fps is:', round(fps, 1))
-        cv2.rectangle(image, (0, 0), (100, 40), (0, 0, 255), -1)
-        cv2.putText(image, str(round(fps, 1)) + 'fps',
-                    (0, 25), font, .75, (0, 255, 255, 2))
+        print('Fps is:', round(fps, 1))
+        print('Latency is:', round(latency, 1)+ 'ms')
+        cv2.rectangle(image, (0, 0), (110, 60), (0, 0, 255), -1)
+        cv2.putText(image, str(round(fps, 1)) + ' fps', (0, 25), font, .75, (0, 255, 255, 2))
+        cv2.putText(image, str(round(latency, 1)) + ' ms', (0, 50), font, .75, (0, 255, 255, 2))
 
         #Chạy ở local
         cv2.imshow("LocalCheck", image)
