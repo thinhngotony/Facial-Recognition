@@ -72,7 +72,7 @@ def gen():
 
 
         #Chạy ở local
-        cv2.imshow("LocalCheck", image)
+        # cv2.imshow("LocalCheck", image)
 
         # Stream lên server local
         frame = cv2.imencode('.jpg', image)[1].tobytes()
