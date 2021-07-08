@@ -25,13 +25,12 @@ def index():
 def gen():
     """Video streaming generator function."""
     cap = cv2.VideoCapture("testnet.mp4")
-
+    fpsReport=0
     # Read until video is completed or streaming
-    while(cap.isOpened()):
-        timeStamp = time.time()
-        fpsReport=0
+    while(cap.isOpened()):       
         scaleFactor=.25
         ret, frame = cap.read()  
+        timeStamp = time.time()
         if not ret: #if vid finish repeat
             frame = cv2.VideoCapture(0)
             continue
@@ -63,12 +62,12 @@ def gen():
         dt = time.time()-timeStamp
         latency = dt*1000
         fps = 1/dt
-        # fpsReport = .90*fpsReport + .1*fps
-        print('Fps is:', round(fps, 1))
+        fpsReport = .90*fpsReport + .1*fps
+        print('Fps is:', round(fpsReport, 1))
         print('Latency is:', round(latency, 1))
         cv2.rectangle(image, (0, 0), (110, 60), (0, 0, 255), -1)
         cv2.putText(image, str(round(latency, 1)) + ' ms', (0, 50), font, .75, (0, 255, 255, 2))
-        cv2.putText(image, str(round(fps, 1)) + ' fps', (0, 25), font, .75, (0, 255, 255, 2))
+        cv2.putText(image, str(round(fpsReport, 1)) + ' fps', (0, 25), font, .75, (0, 255, 255, 2))
 
 
         #Chạy ở local
