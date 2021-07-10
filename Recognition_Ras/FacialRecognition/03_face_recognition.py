@@ -60,7 +60,7 @@ while True:
         
 
         # Check if confidence is less them 100 ==> "0" is perfect match 
-        if (confidence < 100):
+        if (confidence <= 100):
             id = names[id]
             confidence = "  {0}%".format(round(100 - confidence))
         else:

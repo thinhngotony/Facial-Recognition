@@ -1,84 +1,55 @@
-import face_recognition
-import cv2
-import os
-import pickle
-import numpy as np
 import time
+import cv2 
 from flask import Flask, render_template, Response
-
-print(cv2.version)
-
-fpsReport=0
-scaleFactor=.25
-
-Encodings = []
-Names = []
-
-with open('train.pkl', 'rb') as f:
-    Names = pickle.load(f)
-    Encodings = pickle.load(f)
-font = cv2.FONT_HERSHEY_SIMPLEX
-
-
-
-
-
 
 app = Flask(__name__)
 sub = cv2.createBackgroundSubtractorMOG2()  # create background subtractor
-
 
 @app.route('/')
 def index():
     """Video streaming home page."""
     return render_template('index.html')
 
-timeStamp = time.time()
+
 def gen():
     """Video streaming generator function."""
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('768x576.avi')
 
     # Read until video is completed
     while(cap.isOpened()):
-        fpsReport=0
-        scaleFactor=.25
         ret, frame = cap.read()  # import image
-        # if not ret: #if vid finish repeat
-        #     frame = cv2.VideoCapture(0)
-        #     continue
+        if not ret: #if vid finish repeat
+            frame = cv2.VideoCapture("768x576.avi")
+            continue
         if ret:  # if there is a frame continue with code
             image = cv2.resize(frame, (0, 0), None, 1, 1)  # resize image
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # converts image to gray
             fgmask = sub.apply(gray)  # uses the background subtraction
-            facePositions=face_recognition.face_locations(image,model='cnn') # kernel to apply to the morphology
-            allEncodings=face_recognition.face_encodings(image,facePositions)
-            for (top,right,bottom,left),face_encoding in zip(facePositions,allEncodings):
-                name='Unkown Person'
-                matches=face_recognition.compare_faces(Encodings,face_encoding)
-                face_distances = face_recognition.face_distance(Encodings, face_encoding)
-                best_match_index = np.argmin(face_distances)
-                if matches[best_match_index]:
-                    name = Names[best_match_index]
-                top=int(top/scaleFactor)
-                right=int(right/scaleFactor)
-                bottom=int(bottom/scaleFactor)
-                left=int(left/scaleFactor)    
-                cv2.rectangle(image,(left,top),(right, bottom),(0,0,255),2)
-                # Prints centroid text in order to double check later on
-
-                cv2.putText(image,name,(left,top-6),font,.75,(0,0,255),2)
-                print("Day la mat cua: ", name)
-                data = ("in", name)
-                # cv2.drawMarker(image, (int(x),int(y)), color=(0,255,0), markerType=cv2.MARKER_CROSS, thickness=2)
-        # dt = time.time()-timeStamp
-        # fps = 1/dt
-        # fpsReport = .90*fpsReport + .1*fps
-        # print('fps is:', round(fpsReport, 1))
-        # timestamp = datetime.datetime.now()
-        cv2.rectangle(image, (0, 0), (100, 40), (0, 0, 255), -1)
-        cv2.putText(image, str(round(fpsReport, 1)) + 'fps',
-                    (0, 25), font, .75, (0, 255, 255, 2))
-
+            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))  # kernel to apply to the morphology
+            closing = cv2.morphologyEx(fgmask, cv2.MORPH_CLOSE, kernel)
+            opening = cv2.morphologyEx(closing, cv2.MORPH_OPEN, kernel)
+            dilation = cv2.dilate(opening, kernel)
+            retvalbin, bins = cv2.threshold(dilation, 220, 255, cv2.THRESH_BINARY)  # removes the shadows
+            contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            minarea = 400
+            maxarea = 50000
+            for i in range(len(contours)):  # cycles through all contours in current frame
+                if hierarchy[0, i, 3] == -1:  # using hierarchy to only count parent contours (contours not within others)
+                    area = cv2.contourArea(contours[i])  # area of contour
+                    if minarea < area < maxarea:  # area threshold for contour
+                        # calculating centroids of contours
+                        cnt = contours[i]
+                        M = cv2.moments(cnt)
+                        cx = int(M['m10'] / M['m00'])
+                        cy = int(M['m01'] / M['m00'])
+                        # gets bounding points of contour to create rectangle
+                        # x,y is top left corner and w,h is width and height
+                        x, y, w, h = cv2.boundingRect(cnt)
+                        # creates a rectangle around contour
+                        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                        # Prints centroid text in order to double check later on
+                        cv2.putText(image, str(cx) + "," + str(cy), (cx + 10, cy + 10), cv2.FONT_HERSHEY_SIMPLEX,.3, (0, 0, 255), 1)
+                        cv2.drawMarker(image, (cx, cy), (0, 255, 255), cv2.MARKER_CROSS, markerSize=8, thickness=3,line_type=cv2.LINE_8)
         #cv2.imshow("countours", image)
         frame = cv2.imencode('.jpg', image)[1].tobytes()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -94,6 +65,7 @@ def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
     
 if __name__ == '__main__':
