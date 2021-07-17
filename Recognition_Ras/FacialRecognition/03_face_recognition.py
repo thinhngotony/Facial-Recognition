@@ -11,6 +11,7 @@ Developed by Marcelo Rovai - MJRoBot.org @ 21Feb18
 import cv2
 import numpy as np
 import os 
+import time
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('trainer.yml')
@@ -18,6 +19,8 @@ cascadePath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascadePath);
 
 font = cv2.FONT_HERSHEY_SIMPLEX
+fpsReport = 0
+timeStamp = time.time()
 
 #iniciate id counter
 id = 0
@@ -70,7 +73,15 @@ while True:
         cv2.putText(img, str(id), (x+5,y-5), font, 1, (255,255,255), 2)
         cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)  
     
-    cv2.imshow('camera',img) 
+        dt=time.time()-timeStamp
+        latency = dt*1000
+        fps=1/dt
+        fpsReport=.90*fpsReport + .1*fps
+        timeStamp = time.time()
+        cv2.rectangle(img, (0, 0), (110, 60), (0, 0, 255), -1)
+        cv2.putText(img,str(round(fpsReport,1))+ ' fps',(0,25),font,.75,(0,255,255,2))
+        cv2.putText(img,str(round(latency,1))+ ' ms',(0,50),font,.75,(0,255,255,2))
+        cv2.imshow('camera',img) 
 
     k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
     if k == 27:
