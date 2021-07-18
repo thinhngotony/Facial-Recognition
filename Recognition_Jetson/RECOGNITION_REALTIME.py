@@ -7,6 +7,8 @@ from flask import Flask, render_template, Response
 
 Encodings = []
 Names = []
+myAverageFPS = []
+myAverageLatency = []
 
 with open('train.pkl', 'rb') as f:
     Names = pickle.load(f)
@@ -22,16 +24,19 @@ def index():
     """Video streaming home page."""
     return render_template('index.html')
 
+
 def gen():
     """Video streaming generator function."""
     cap = cv2.VideoCapture(0)
     fpsReport=0
+    latency=0
 
     # Read until video is completed or streaming
     while(cap.isOpened()):
         timeStamp = time.time()
         scaleFactor=.25
         ret, frame = cap.read()  
+
         if not ret: #if vid finish repeat
             frame = cv2.VideoCapture(0)
             continue
@@ -56,16 +61,22 @@ def gen():
                 left=int(left/scaleFactor)    
                 cv2.rectangle(image,(left,top),(right, bottom),(0,0,255),2)
                 cv2.putText(image,name,(left,top-6),font,.75,(0,0,255),2)
-                print("Day la mat cua: ", name)
-                
-
+                print("This is face of: ", name)
+        
         # Quá trình tính FPS và Latency
         dt = time.time()-timeStamp
-        latency = dt*1000
+        latency = int(dt*1000)
         fps = 1/dt
-        fpsReport = .90*fpsReport + .1*fps
+        fpsReportScale = .90*fpsReport + .1*fps
+        fpsReport = int(fpsReportScale)
+        if latency > 0 and latency < 100:
+            myAverageFPS.append(fpsReport)
+            myAverageLatency.append(latency)
+                # break
         print('Fps is:', round(fpsReport, 1))
         print('Latency is:', round(latency, 1))
+        showAF = np.mean(myAverageFPS,axis=0)
+        showAL = np.mean(myAverageLatency,axis=0)
         cv2.rectangle(image, (0, 0), (110, 60), (0, 0, 255), -1)
         cv2.putText(image, str(round(fpsReport, 1)) + ' fps', (0, 25), font, .75, (0, 255, 255, 2))
         cv2.putText(image, str(round(latency, 1)) + ' ms', (0, 50), font, .75, (0, 255, 255, 2))
@@ -78,10 +89,13 @@ def gen():
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         key = cv2.waitKey(20) 
         if key == ord('q'):
+           print('FPS Average is:', showAF, 'fps')
+           print('Latency Average is:', showAL,'ms')
            break
 
-
         
+    cap.release()
+    cv2.destroyAllWindows()
 
 @app.route('/video_feed')
 def video_feed():

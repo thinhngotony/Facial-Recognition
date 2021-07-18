@@ -41,6 +41,8 @@ cam.set(4, 480) # set video height
 minW = 0.1*cam.get(3)
 minH = 0.1*cam.get(4)
 
+
+
 while True:
 
     ret, img =cam.read()
