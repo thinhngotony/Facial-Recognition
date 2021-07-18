@@ -26,7 +26,9 @@ timeStamp = time.time()
 id = 0
 
 # names related to ids: example ==> Marcelo: id=1,  etc
-names = ['None', 'Tony','ThaiNgo']  
+names = ['None', 'Tony','ThaiNgo'] 
+myAverageFPS = []
+myAverageLatency = []
 
 
 # Initialize and start realtime video capture
@@ -75,18 +77,26 @@ while True:
         cv2.putText(img, str(id), (x+5,y-5), font, 1, (255,255,255), 2)
         cv2.putText(img, str(confidence), (x+5,y+h-5), font, 1, (255,255,0), 1)  
     
-        dt=time.time()-timeStamp
-        latency = dt*1000
-        fps=1/dt
-        fpsReport=.90*fpsReport + .1*fps
-        timeStamp = time.time()
-        cv2.rectangle(img, (0, 0), (110, 60), (0, 0, 255), -1)
-        cv2.putText(img,str(round(fpsReport,1))+ ' fps',(0,25),font,.75,(0,255,255,2))
-        cv2.putText(img,str(round(latency,1))+ ' ms',(0,50),font,.75,(0,255,255,2))
-        cv2.imshow('camera',img) 
+    dt=time.time()-timeStamp
+    latency = dt*1000
+    fps=1/dt
+    fpsReport=.90*fpsReport + .1*fps
+    fpsReport = int(fpsReport)
+    if latency > 0 and latency < 100:
+        myAverageFPS.append(fpsReport)
+        myAverageLatency.append(latency)
+    showAF = np.mean(myAverageFPS).round()
+    showAL = np.mean(myAverageLatency).round()
+    timeStamp = time.time()
+    cv2.rectangle(img, (0, 0), (110, 60), (0, 0, 255), -1)
+    cv2.putText(img,str(round(fpsReport,1))+ ' fps',(0,25),font,.75,(0,255,255,2))
+    cv2.putText(img,str(round(latency,1))+ ' ms',(0,50),font,.75,(0,255,255,2))
+    cv2.imshow('camera',img) 
 
     k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
-    if k == 27:
+    if k == ord('q'):
+        print('FPS Average is:', showAF, 'fps')
+        print('Latency Average is:', showAL,'ms')
         break
 
 # Do a bit of cleanup

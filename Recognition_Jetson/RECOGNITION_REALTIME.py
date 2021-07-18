@@ -67,16 +67,15 @@ def gen():
         dt = time.time()-timeStamp
         latency = int(dt*1000)
         fps = 1/dt
-        fpsReportScale = .90*fpsReport + .1*fps
-        fpsReport = int(fpsReportScale)
+        fpsReport = .90*fpsReport + .1*fps
+        fpsReport = int(fpsReport)
         if latency > 0 and latency < 100:
             myAverageFPS.append(fpsReport)
             myAverageLatency.append(latency)
-                # break
+        showAF = np.mean(myAverageFPS).round()
+        showAL = np.mean(myAverageLatency).round()
         print('Fps is:', round(fpsReport, 1))
         print('Latency is:', round(latency, 1))
-        showAF = np.mean(myAverageFPS,axis=0)
-        showAL = np.mean(myAverageLatency,axis=0)
         cv2.rectangle(image, (0, 0), (110, 60), (0, 0, 255), -1)
         cv2.putText(image, str(round(fpsReport, 1)) + ' fps', (0, 25), font, .75, (0, 255, 255, 2))
         cv2.putText(image, str(round(latency, 1)) + ' ms', (0, 50), font, .75, (0, 255, 255, 2))

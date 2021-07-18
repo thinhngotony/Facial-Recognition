@@ -56,6 +56,8 @@ cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 fpsReport = 0
 font = cv2.FONT_HERSHEY_SIMPLEX
 timeStamp = time.time()
+myAverageFPS = []
+myAverageLatency = []
 while True:
 	# grab the frame from the threaded video stream
 	ret,frame = cap.read()
@@ -127,7 +129,13 @@ while True:
 	latency = dt*1000
 	fps=1/dt
 	fpsReport=.90*fpsReport + .1*fps
+	fpsReport = int(fpsReport)
 	timeStamp = time.time()
+	if latency > 0 and latency < 100:
+		myAverageFPS.append(fpsReport)
+		myAverageLatency.append(latency)
+		showAF = np.mean(myAverageFPS).round()
+		showAL = np.mean(myAverageLatency).round()
 	cv2.rectangle(frame, (0, 0), (110, 60), (0, 0, 255), -1)
 	cv2.putText(frame,str(round(fpsReport,1))+ ' fps',(0,25),font,.75,(0,255,255,2))
 	cv2.putText(frame,str(round(latency,1))+ ' ms',(0,50),font,.75,(0,255,255,2))
@@ -136,6 +144,8 @@ while True:
 		key = cv2.waitKey(1) & 0xFF
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
+			print('Average FPS is: ',showAF,'fps')
+			print('Average Latency is: ',showAL,'ms')
 			break
 # do a bit of cleanup
 cap.release()
