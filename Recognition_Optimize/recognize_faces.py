@@ -169,7 +169,7 @@ while True:
 			print('Average FPS is: ',showAF,'fps')
 			print('Average Latency is: ',showAL,'ms')
 			print('Average Score is: ',showAS,'%')
-			print('All faces recognized: ',showAllFace)
+			print('Recognition faces found: ',showAllFace)
 			print('Most suspended face: ',showAN)
 			print('____________________________')
 			break

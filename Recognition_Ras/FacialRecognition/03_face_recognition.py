@@ -12,6 +12,8 @@ import cv2
 import numpy as np
 import os 
 import time
+from statistics import mode
+from collections import Counter
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('trainer.yml')
@@ -29,6 +31,8 @@ id = 0
 names = ['None', 'Tony','ThaiNgo']
 myAverageFPS = []
 myAverageLatency = []
+scores = []
+nameList =[]
 
 
 # Initialize and start realtime video capture
@@ -43,7 +47,8 @@ cam.set(4, 480) # set video height
 minW = 0.1*cam.get(3)
 minH = 0.1*cam.get(4)
 
-
+def most_frequent(List):
+    return(mode(List))
 
 while True:
 
@@ -69,7 +74,10 @@ while True:
         # Check if confidence is less them 100 ==> "0" is perfect match 
         if (confidence <= 100):
             id = names[id]
+            score = (100-confidence)
             confidence = "  {0}%".format(round(100 - confidence))
+            scores.append(score)
+            nameList.append(id)
         else:
             id = "unknown"
             confidence = "  {0}%".format(round(100 - confidence))
@@ -87,7 +95,12 @@ while True:
         myAverageLatency.append(latency)
     showAF = np.mean(myAverageFPS).round()
     showAL = np.mean(myAverageLatency).round()
+    showAS = np.mean(scores).round()
+    showAN = most_frequent(nameList)
+    showAllFace = Counter(nameList)    
     timeStamp = time.time()
+    print("This is face of: ", id)
+    print("Fps is: ", fpsReport)
     cv2.rectangle(img, (0, 0), (110, 60), (0, 0, 255), -1)
     cv2.putText(img,str(round(fpsReport,1))+ ' fps',(0,25),font,.75,(0,255,255,2))
     cv2.putText(img,str(round(latency,1))+ ' ms',(0,50),font,.75,(0,255,255,2))
@@ -95,8 +108,13 @@ while True:
 
     k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
     if k == ord('q'):
-        print('FPS Average is:', showAF, 'fps')
-        print('Latency Average is:', showAL,'ms')
+        print('____________________________')
+        print('Average FPS is:', showAF, 'fps')
+        print('Average Latency is:', showAL,'ms')
+        print('Average Accuracy is:',showAS, '%')
+        print('Recognition faces found:', showAllFace)
+        print('Most suspend face:', showAN)
+        print('____________________________')
         break
 
 # Do a bit of cleanup
