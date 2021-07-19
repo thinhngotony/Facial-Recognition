@@ -98,12 +98,13 @@ def gen():
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         key = cv2.waitKey(20) 
         if key == ord('q'):
+           print('____________________________')
            print('FPS Average is:', showAF, 'fps')
            print('Latency Average is:', showAL,'ms')
            print('Recognition faces found:', showAllFace)
            print('Most suspend face:', showAN)
+           print('____________________________')
            break
-
         
     cap.release()
     cv2.destroyAllWindows()

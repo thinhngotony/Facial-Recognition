@@ -26,7 +26,7 @@ timeStamp = time.time()
 id = 0
 
 # names related to ids: example ==> Marcelo: id=1,  etc
-names = ['None', 'Tony','ThaiNgo'] 
+names = ['None', 'Tony','ThaiNgo']
 myAverageFPS = []
 myAverageLatency = []
 

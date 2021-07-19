@@ -7,6 +7,11 @@ import pickle
 import time
 import cv2
 import numpy as np
+from statistics import mode
+from collections import Counter
+import numpy as np
+
+
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--encodings", default='encodings.pkl',help="path to serialized db of facial encodings")
@@ -58,6 +63,12 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 timeStamp = time.time()
 myAverageFPS = []
 myAverageLatency = []
+myAverageScore = []
+nameList = []
+
+def most_frequent(List):
+    return(mode(List))
+
 while True:
 	# grab the frame from the threaded video stream
 	ret,frame = cap.read()
@@ -87,6 +98,7 @@ while True:
 		if matches[best_match_index]:
 				name = data["names"][best_match_index]
 				score = face_distances[best_match_index]
+				nameList.append(name)
 				# print(score)
 				# print (encoding - 1) / (encoding + data["encodings"][best_match_index] - 2) * 100
 		names.append(name)
@@ -123,6 +135,7 @@ while True:
 		cv2.putText(frame, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
 			0.75, (0, 255, 0), 2)
 		cv2.putText(frame, str(np.round((1-score)*100,2))+ "%", (right-40, y), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
+		print("This is face of: ", name)
     # check to see if we are supposed to display the output frame to
 	# the screen
 	dt=time.time()-timeStamp
@@ -134,8 +147,16 @@ while True:
 	if latency > 0 and latency < 100:
 		myAverageFPS.append(fpsReport)
 		myAverageLatency.append(latency)
-		showAF = np.mean(myAverageFPS).round()
-		showAL = np.mean(myAverageLatency).round()
+		myAverageScore.append(score)
+	showAF = np.mean(myAverageFPS).round()
+	showAL = np.mean(myAverageLatency).round()
+	showAN = most_frequent(nameList)
+	showAllFace = Counter(nameList)    
+
+	calAS = np.mean(myAverageScore)
+	showAS = (100-(100*calAS)).round()
+	print('Fps is:', round(fpsReport, 1))
+	print('Latency is:', round(latency, 1))
 	cv2.rectangle(frame, (0, 0), (110, 60), (0, 0, 255), -1)
 	cv2.putText(frame,str(round(fpsReport,1))+ ' fps',(0,25),font,.75,(0,255,255,2))
 	cv2.putText(frame,str(round(latency,1))+ ' ms',(0,50),font,.75,(0,255,255,2))
@@ -144,9 +165,13 @@ while True:
 		key = cv2.waitKey(1) & 0xFF
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
+			print('____________________________')
 			print('Average FPS is: ',showAF,'fps')
 			print('Average Latency is: ',showAL,'ms')
+			print('Average Score is: ',showAS,'%')
+			print('All faces recognized: ',showAllFace)
+			print('Most suspended face: ',showAN)
+			print('____________________________')
 			break
-# do a bit of cleanup
 cap.release()
 cv2.destroyAllWindows()
