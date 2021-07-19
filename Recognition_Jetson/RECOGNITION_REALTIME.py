@@ -3,12 +3,17 @@ import cv2
 import pickle
 import numpy as np
 import time
+import statistics
 from flask import Flask, render_template, Response
+from statistics import mode
+from collections import Counter
+
 
 Encodings = []
 Names = []
 myAverageFPS = []
 myAverageLatency = []
+nameList = []
 
 with open('train.pkl', 'rb') as f:
     Names = pickle.load(f)
@@ -24,6 +29,8 @@ def index():
     """Video streaming home page."""
     return render_template('index.html')
 
+def most_frequent(List):
+    return(mode(List))
 
 def gen():
     """Video streaming generator function."""
@@ -55,6 +62,7 @@ def gen():
                 best_match_index = np.argmin(face_distances)
                 if matches[best_match_index]:
                     name = Names[best_match_index]
+                    nameList.append(name)
                 top=int(top/scaleFactor)
                 right=int(right/scaleFactor)
                 bottom=int(bottom/scaleFactor)
@@ -74,6 +82,8 @@ def gen():
             myAverageLatency.append(latency)
         showAF = np.mean(myAverageFPS).round()
         showAL = np.mean(myAverageLatency).round()
+        showAN = most_frequent(nameList)
+        showAllFace = Counter(nameList)     
         print('Fps is:', round(fpsReport, 1))
         print('Latency is:', round(latency, 1))
         cv2.rectangle(image, (0, 0), (110, 60), (0, 0, 255), -1)
@@ -90,6 +100,8 @@ def gen():
         if key == ord('q'):
            print('FPS Average is:', showAF, 'fps')
            print('Latency Average is:', showAL,'ms')
+           print('Recognition faces found:', showAllFace)
+           print('Most suspend face:', showAN)
            break
 
         
