@@ -144,6 +144,7 @@ while True:
 	fpsReport=.90*fpsReport + .1*fps
 	fpsReport = int(fpsReport)
 	timeStamp = time.time()
+	
 	if latency > 0 and latency < 100:
 		myAverageFPS.append(fpsReport)
 		myAverageLatency.append(latency)
@@ -152,9 +153,9 @@ while True:
 	showAL = np.mean(myAverageLatency).round()
 	showAN = most_frequent(nameList)
 	showAllFace = Counter(nameList)    
-
 	calAS = np.mean(myAverageScore)
 	showAS = (100-(100*calAS)).round()
+
 	print('Fps is:', round(fpsReport, 1))
 	print('Latency is:', round(latency, 1))
 	cv2.rectangle(frame, (0, 0), (110, 60), (0, 0, 255), -1)
@@ -165,6 +166,8 @@ while True:
 		key = cv2.waitKey(1) & 0xFF
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
+			print('____________________________')
+			print('     Optimize PC Model')
 			print('____________________________')
 			print('Average FPS is: ',showAF,'fps')
 			print('Average Latency is: ',showAL,'ms')

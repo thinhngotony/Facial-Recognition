@@ -109,6 +109,8 @@ while True:
     k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
     if k == ord('q'):
         print('____________________________')
+        print('     Raspberry Pi Model')
+        print('____________________________')
         print('Average FPS is:', showAF, 'fps')
         print('Average Latency is:', showAL,'ms')
         print('Average Accuracy is:',showAS, '%')

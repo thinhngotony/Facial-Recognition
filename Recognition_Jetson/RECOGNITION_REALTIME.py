@@ -99,7 +99,9 @@ def gen():
         key = cv2.waitKey(20) 
         if key == ord('q'):
            print('____________________________')
-           print('Average FPS  is:', showAF, 'fps')
+           print('     Jetson Nano Model')
+           print('____________________________')
+           print('Average FPS is:', showAF, 'fps')
            print('Average Latency is:', showAL,'ms')
            print('Recognition faces found:', showAllFace)
            print('Most suspend face:', showAN)
