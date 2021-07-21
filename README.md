@@ -133,16 +133,16 @@ You can pull requests and email me for development
 <!-- LICENSE -->
 ## License
 
-Distributed under the . See `LICENSE` for more information.
+All of code is copied from lots of source in Github and Internet to remaster and optimized. This makes it will not be owned by any persons! Contact `Author - Tony` for more information.
 
 
 
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@thinhngotony](https://twitter.com/thinhngotony) - email - `thinhngo.tony@gmail.com`
+Your Name - [@thinhngotony](https://twitter.com/thinhngotony) - email - `thinhngotony@gmail.com`
 
-More project Link: [https://github.com/thinhngotony](https://github.com/thinhngotony)
+More projects Link: [https://github.com/thinhngotony](https://github.com/thinhngotony)
 
 
 
