@@ -112,7 +112,7 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Exactly how to use I write it in file Readme.md of its folder, so let's check inside folders
+Exactly how to use every codes I wrote it in file Readme.md of their folder, so let's check inside folders
 
 _For more examples, please refer to the [Documentation](https://drive.google.com/file/d/1e3lFpqxdTujUMOR6nWVhmmPPO6mJ-80R/view?usp=sharing)_
 
@@ -140,7 +140,7 @@ Distributed under the . See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@thinhngotony](https://twitter.com/thinhngotony) - email - [thinhngo.tony@gmail.com]
+Your Name - [@thinhngotony](https://twitter.com/thinhngotony) - email - `thinhngo.tony@gmail.com`
 
 More project Link: [https://github.com/thinhngotony](https://github.com/thinhngotony)
 
