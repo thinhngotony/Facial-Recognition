@@ -151,8 +151,9 @@ while True:
 		myAverageScore.append(score)
 	showAF = np.mean(myAverageFPS).round()
 	showAL = np.mean(myAverageLatency).round()
-	showAN = most_frequent(nameList)
-	showAllFace = Counter(nameList)    
+	if len(nameList) > 1:
+		showAN = most_frequent(nameList)
+		showAllFace = Counter(nameList)    
 	calAS = np.mean(myAverageScore)
 	showAS = (100-(100*calAS)).round()
 

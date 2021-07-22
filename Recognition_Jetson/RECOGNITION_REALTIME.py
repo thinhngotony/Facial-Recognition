@@ -82,8 +82,9 @@ def gen():
             myAverageLatency.append(latency)
         showAF = np.mean(myAverageFPS).round()
         showAL = np.mean(myAverageLatency).round()
-        showAN = most_frequent(nameList)
-        showAllFace = Counter(nameList)     
+        if len(nameList) > 1:   
+            showAN = most_frequent(nameList)
+            showAllFace = Counter(nameList)     
         print('Fps is:', round(fpsReport, 1))
         print('Latency is:', round(latency, 1))
         cv2.rectangle(image, (0, 0), (110, 60), (0, 0, 255), -1)
