@@ -53,7 +53,7 @@
 
 ### Built With
 
-* [Cuda Tookit + CudaDNN]()
+* [Cuda Toolkit + CudaDNN]()
 * [Face Recognition]()
 * [OpenCV]()
 * [Flask]()
@@ -79,11 +79,11 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Download CudaTookit and CudaDNN from NVDIA or this link
+1. Download CudaToolkit and CudaDNN from NVDIA or this link
    ```sh
    https://drive.google.com/drive/folders/1AruLdIXXJFrG7BkDT2-T_clontU7em1f?usp=sharing
    ```
-2. Install CudaTookit
+2. Install CudaToolkit
 
 3. Copy all of files in bin, include, lib FOLDERS from ..\cudnn-11.4-windows-x64-v8.2.2.26\cuda to corresponding FOLDERS C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.4
 
