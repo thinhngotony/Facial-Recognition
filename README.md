@@ -128,7 +128,7 @@ It contains in source code folders in above link `Documentation`
 <!-- CONTRIBUTING -->
 ## Contributing
 
-You can pull requests and email me for development 
+You can pull requests and emails me for development 
 
 <!-- LICENSE -->
 ## License
