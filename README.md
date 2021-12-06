@@ -11,9 +11,9 @@
     <br />
     <a href="https://drive.google.com/file/d/1Vv-2d_wdnpByLtC6wmC7UwAxZiqLqjZt/view?usp=sharing">View Demo</a>
     ·
-    <a href="facebook.com/tonyngo0206">Report Bug</a>
+    <a href="facebook.com/thinhngotony">Report Bug</a>
     ·
-    <a href="facebook.com/tonyngo0206">Request Feature</a>
+    <a href="facebook.com/thinhngotony">Request Feature</a>
   </p>
 </p>
 
