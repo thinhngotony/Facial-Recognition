@@ -12,7 +12,7 @@ matplotlib==3.3.3
 mysql-connector-python==8.0.22
 numpy==1.19.3
 opencv-python==4.4.0.46
-Pillow==8.3.2
+Pillow==9.0.1
 protobuf==3.14.0
 PyMySQL==0.10.1
 pyparsing==2.4.7
